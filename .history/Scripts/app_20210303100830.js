@@ -27,7 +27,7 @@
           $(`#${activeLink}`).removeClass("active");//removes highlighted link
           activeLink = $(this).attr("id");
           loadContent(activeLink);
-          $(`#${activeLink}`).addClass("active");//applies highlighted link to new page
+          $(`#${activeLink}.`).addClass("active");//applies highlighted link to new page
 
 
           history.replaceState({}, "", activeLink); //replaces the url in the browser
