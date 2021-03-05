@@ -6,64 +6,60 @@
 
 "use strict";
 
+//const { Callbacks } = require("jquery");
 
 ((core) =>
 {
 
- /**
-     * Inject the Navigation bar into the Header element and highlight the active link based on the pageName parameter
-     *
-     * @param {string} pageName
-     */
-    function loadHeader(pageName)
-    {
-      // inject the Header
+  /**
+   * 
+   */
+  function loadHeader(pageName){
+      //Inject the header
       $.get("./Views/components/header.html", function(data)
       {
-        $("header").html(data); // load the navigation bar
-        
-        toggleLogin(); // add login / logout and secure links
-        
-        $(`#${pageName}`).addClass("active"); // highlight active link
+        $("header").html(data);
+        $(`#${pageName}`).addClass("active");
 
-        // loop through each anchor tag in the unordered list and 
-        // add an event listener / handler to allow for 
-        // content injection
+        //loop through each anchor tag in the unordered list
+
         $("a").on("click", function()
         {
-          $(`#${router.ActiveLink}`).removeClass("active"); // removes highlighted link
+
+          $(`#${router.ActiveLink}`).removeClass("active");//removes highlighted link
           router.ActiveLink = $(this).attr("id");
           loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-          $(`#${router.ActiveLink}`).addClass("active"); // applies highlighted link to new page
-          history.pushState({},"", router.ActiveLink); // this replaces the url displayed in the browser
+          $(`#${router.ActiveLink}`).addClass("active");//applies highlighted link to new page
+
+
+          history.replaceState({}, "", router.ActiveLink); //replaces the url in the browser
+
+
+          //location.href = String(location.href).replace(/#/, "")
+          
         });
 
-        // make it look like each nav item is an active link
-        $("a").on("mouseover", function()
-        {
-          $(this).css('cursor', 'pointer');
-        });
-        
-      });
-    }
+          $("a").on("mouseover",function()
+          {
+            $(this).css('cursor','pointer');
+          });
+    });
+  }
   /**
-     * Inject page content in the main element 
-     *
-     * @param {string} pageName
-     * @param {function} callback
-     * @returns {void}
-     */
-    function loadContent(pageName, callback)
-    {
-      // inject content
-      $.get(`./Views/content/${pageName}.html`, function(data)
+   * Inject page content in the main element
+   * 
+   * @param {string} pageName
+   * @returns {void}                           , ,           
+   */
+  function loadContent(pageName)
+  { 
+    $.get(`./Views/content/${pageName}.html`, function(data)
       {
         $("main").html(data);
-
-        callback();
       });
-      
-    }
+
+      callback();
+  }
       //Inject the content
       
     
@@ -78,10 +74,10 @@
 
     function displayHome()
     {
-      // loadHeader(router.ActiveLink);
-      // loadContent(router.ActiveLink);
-      // loadFooter();
-      console.log("Home page function called");
+      loadHeader(router.ActiveLink);
+
+      loadContent(router.ActiveLink);
+      loadFooter();
 
       
       
@@ -190,9 +186,6 @@
 
     function displayContactList() 
     {
-
-      authGuard();
-
       if (localStorage.length > 0) 
       {
 
@@ -226,7 +219,7 @@
         contactList.innerHTML = data;
 
         $("button.edit").on("click", function(){
-          location.href = "/edit#" + $(this).val();
+          location.href = "edit.html#" + $(this).val();
          });
 
          $("button.delete").on("click", function(){
@@ -234,12 +227,12 @@
            {
             localStorage.removeItem($(this).val());
            }
-           location.href = "/contact-list"; // refresh the page
+           location.href = "contact-list.html"; // refresh the page
          });
 
          $("#addButton").on("click", function() 
          {
-          location.href = "/edit";
+          location.href = "edit.html";
          });
       }
     }
@@ -290,7 +283,7 @@
           localStorage.setItem(key, contact.serialize());
 
           // return to the contact list
-          location.href = "/contact-list";
+          location.href = "contact-list.html";
           
         });
    
@@ -298,7 +291,7 @@
       $("#cancelButton").on("click", function()
       {
         // return to the contact list
-        location.href = "/contact-list";
+        location.href = "contact-list.html";
       });
     }
 
@@ -338,7 +331,7 @@
             messageArea.removeAttr("class").hide();
 
             // redirect user to secure area - contact-list.html
-            location.href = "/contact-list";
+            location.href = "contact-list.html";
           }
           else
           {
@@ -354,16 +347,11 @@
         // clear the login form
         document.forms[0].reset();
         // return to the home page
-        location.href = "/home";
+        location.href = "index.html";
       });
     }
 
     function displayRegister()
-    {
-
-    }
-
-    function display404()
     {
 
     }
@@ -374,8 +362,8 @@
       if(sessionStorage.getItem("user"))
       {
         // swap out the login link for logout
-        $("#loginListItem").html(
-        `<a id="logout" class="nav-link" aria-current="page" ><i class="fas fa-sign-out-alt"></i> Logout</a>`
+        $("#login").html(
+        `<a id="logout" class="nav-link" aria-current="page" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>`
         );
 
         $("#logout").on("click", function()
@@ -384,27 +372,13 @@
           sessionStorage.clear();
 
           // redirect back to login
-          location.href = "/login";
+          location.href = "login.html";
         });
        
         $(`<li class="nav-item">
-        <a id="contactListLink" class="nav-link" aria-current="page" href="/contact-list"><i class="fas fa-users fa-lg"></i> Contact List</a>
-      </li>`).insertBefore("#loginListItem");
+        <a id="contactListLink" class="nav-link" aria-current="page" href="contact-list.html"><i class="fas fa-users fa-lg"></i> Contact List</a>
+      </li>`).insertBefore("#login");
       
-      }
-      else
-      {
-        $("#loginListItem").html(
-          `<a id ="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
-          );
-      }
-    }
-    function authGuard()
-    {
-      if(!sessionStorage.getItem("user"))
-      {
-      // redirect back to login page
-      location.href = "/login";
       }
     }
     function ActiveLinkCallBack(activeLink)
@@ -413,16 +387,13 @@
         {
           case "home": return displayHome;
           case "about": return displayAbout;
-          case "projects": return displayProjects;
-          case "services": return displayServices;
-          case "contact": return displayContact;
-          case "contact-list": return displayContactList;
-          case "edit": return displayEdit
-          case "login": return displayLogin;
-          case "register": return displayRegister;
-          default:
-            console.error("ERROR: callback does not exist: " + activeLink);
-            break;
+          case "projects": return displayProjects();
+          case "services": return displayServices();
+          case "contact": return displayContact();
+          case "contact-List": return displayContactList();
+          case "edit": return displayEdit();
+          case "login": return displayLogin();
+          case "register": return displayRegister();
         }
     }
     function Start()
@@ -430,9 +401,13 @@
         console.log("App Started...");
 
         loadHeader(router.ActiveLink);
-        loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+        loadContent(router.ActiveLink);
         loadFooter(router.ActiveLink);
 
+        
+
+        // toggle login/logout
+       toggleLogin();
         
     }
 

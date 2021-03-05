@@ -6,11 +6,9 @@
 
 "use strict";
 
-
 ((core) =>
 {
-
- /**
+    /**
      * Inject the Navigation bar into the Header element and highlight the active link based on the pageName parameter
      *
      * @param {string} pageName
@@ -46,7 +44,8 @@
         
       });
     }
-  /**
+
+    /**
      * Inject page content in the main element 
      *
      * @param {string} pageName
@@ -64,27 +63,20 @@
       });
       
     }
-      //Inject the content
-      
-    
-  
-  function loadFooter(){
-      //Inject the footer
+
+    function loadFooter()
+    {
+      // inject the Footer
       $.get("./Views/components/footer.html", function(data)
       {
         $("footer").html(data);
       });
-  }
+    }
 
     function displayHome()
     {
-      // loadHeader(router.ActiveLink);
-      // loadContent(router.ActiveLink);
-      // loadFooter();
       console.log("Home page function called");
-
-      
-      
+        
     }
 
     function displayAbout()
@@ -190,7 +182,7 @@
 
     function displayContactList() 
     {
-
+      // don't allow visitors to go here
       authGuard();
 
       if (localStorage.length > 0) 
@@ -363,11 +355,6 @@
 
     }
 
-    function display404()
-    {
-
-    }
-
     function toggleLogin()
     {
       // if user is logged in
@@ -375,7 +362,7 @@
       {
         // swap out the login link for logout
         $("#loginListItem").html(
-        `<a id="logout" class="nav-link" aria-current="page" ><i class="fas fa-sign-out-alt"></i> Logout</a>`
+        `<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`
         );
 
         $("#logout").on("click", function()
@@ -386,19 +373,27 @@
           // redirect back to login
           location.href = "/login";
         });
+
+        // make it look like each nav item is an active link
+        $("#logout").on("mouseover", function()
+        {
+          $(this).css('cursor', 'pointer');
+        });
        
         $(`<li class="nav-item">
-        <a id="contactListLink" class="nav-link" aria-current="page" href="/contact-list"><i class="fas fa-users fa-lg"></i> Contact List</a>
+        <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
       </li>`).insertBefore("#loginListItem");
       
       }
       else
       {
+        // swap out the login link for logout
         $("#loginListItem").html(
-          `<a id ="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
+          `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
           );
       }
     }
+
     function authGuard()
     {
       if(!sessionStorage.getItem("user"))
@@ -407,33 +402,41 @@
       location.href = "/login";
       }
     }
+
+    function display404()
+    {
+
+    }
+
     function ActiveLinkCallBack(activeLink)
     {
-      switch (router.ActiveLink) 
-        {
-          case "home": return displayHome;
-          case "about": return displayAbout;
-          case "projects": return displayProjects;
-          case "services": return displayServices;
-          case "contact": return displayContact;
-          case "contact-list": return displayContactList;
-          case "edit": return displayEdit
-          case "login": return displayLogin;
-          case "register": return displayRegister;
-          default:
-            console.error("ERROR: callback does not exist: " + activeLink);
-            break;
-        }
+      switch (activeLink) 
+      {
+        case "home": return displayHome;
+        case "about": return displayAbout;
+        case "projects": return displayProjects;
+        case "services": return displayServices;
+        case "contact": return displayContact;
+        case "contact-list": return displayContactList;
+        case "edit": return displayEdit;
+        case "login": return displayLogin;
+        case "register": return displayRegister;
+        case "404": return display404;
+        default:
+          console.error("ERROR: callback does not exist: " + activeLink);
+          break;
+      }
     }
+
     function Start()
     {
         console.log("App Started...");
 
         loadHeader(router.ActiveLink);
+      
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-        loadFooter(router.ActiveLink);
 
-        
+        loadFooter();
     }
 
     window.addEventListener("load", Start);

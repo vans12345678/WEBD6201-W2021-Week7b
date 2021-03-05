@@ -22,7 +22,7 @@
         // Public methods
 
         /**
-         * Adds new route to the Routing Table
+         * Adds a new route to the Routing Table
          *
          * @param {string} route
          * @returns {void}
@@ -33,7 +33,7 @@
         }
 
         /**
-         * Replaces the current Routing Table with a new one
+         * This replaces the current Routing Table with a new one
          * Routes should begin with / character
          *
          * @param {string} routingTable
@@ -99,14 +99,4 @@ router.AddTable(["/",
 "/login", 
 "/edit"])
 
-//console.log(router.ToString());
-let route = location.pathname;
-if(router.Find(route) > -1)
-{
-    //console.log("route found");
-    router.ActiveLink = (route == "/") ? "home" : route.substring(1);
-}
-else
-{
-   router.ActiveLink = "404";
-}
+console.log(router.ToString());

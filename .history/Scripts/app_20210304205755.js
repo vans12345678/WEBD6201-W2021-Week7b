@@ -190,9 +190,8 @@
 
     function displayContactList() 
     {
-
-      authGuard();
-
+      toggleLogin();
+       
       if (localStorage.length > 0) 
       {
 
@@ -336,6 +335,7 @@
 
             // hide any error message
             messageArea.removeAttr("class").hide();
+            toggleLogin();
 
             // redirect user to secure area - contact-list.html
             location.href = "/contact-list";
@@ -397,14 +397,6 @@
         $("#loginListItem").html(
           `<a id ="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
           );
-      }
-    }
-    function authGuard()
-    {
-      if(!sessionStorage.getItem("user"))
-      {
-      // redirect back to login page
-      location.href = "/login";
       }
     }
     function ActiveLinkCallBack(activeLink)

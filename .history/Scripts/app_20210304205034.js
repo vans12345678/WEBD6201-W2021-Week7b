@@ -190,9 +190,6 @@
 
     function displayContactList() 
     {
-
-      authGuard();
-
       if (localStorage.length > 0) 
       {
 
@@ -399,14 +396,6 @@
           );
       }
     }
-    function authGuard()
-    {
-      if(!sessionStorage.getItem("user"))
-      {
-      // redirect back to login page
-      location.href = "/login";
-      }
-    }
     function ActiveLinkCallBack(activeLink)
     {
       switch (router.ActiveLink) 
@@ -416,7 +405,7 @@
           case "projects": return displayProjects;
           case "services": return displayServices;
           case "contact": return displayContact;
-          case "contact-list": return displayContactList;
+          case "contact-List": return displayContactList;
           case "edit": return displayEdit
           case "login": return displayLogin;
           case "register": return displayRegister;

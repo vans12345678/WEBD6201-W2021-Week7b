@@ -190,9 +190,8 @@
 
     function displayContactList() 
     {
-
-      authGuard();
-
+       authGuard();
+       
       if (localStorage.length > 0) 
       {
 

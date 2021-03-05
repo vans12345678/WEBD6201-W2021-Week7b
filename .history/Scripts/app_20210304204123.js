@@ -10,42 +10,40 @@
 ((core) =>
 {
 
- /**
-     * Inject the Navigation bar into the Header element and highlight the active link based on the pageName parameter
-     *
-     * @param {string} pageName
-     */
-    function loadHeader(pageName)
-    {
-      // inject the Header
+  /**
+   * 
+   */
+  function loadHeader(pageName){
+      //Inject the header
       $.get("./Views/components/header.html", function(data)
       {
-        $("header").html(data); // load the navigation bar
-        
-        toggleLogin(); // add login / logout and secure links
-        
-        $(`#${pageName}`).addClass("active"); // highlight active link
+        $("header").html(data);
+        $(`#${pageName}`).addClass("active");
 
-        // loop through each anchor tag in the unordered list and 
-        // add an event listener / handler to allow for 
-        // content injection
+        //loop through each anchor tag in the unordered list
+
         $("a").on("click", function()
         {
-          $(`#${router.ActiveLink}`).removeClass("active"); // removes highlighted link
+
+          $(`#${router.ActiveLink}`).removeClass("active");//removes highlighted link
           router.ActiveLink = $(this).attr("id");
           loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
-          $(`#${router.ActiveLink}`).addClass("active"); // applies highlighted link to new page
-          history.pushState({},"", router.ActiveLink); // this replaces the url displayed in the browser
+          $(`#${router.ActiveLink}`).addClass("active");//applies highlighted link to new page
+
+
+          history.replaceState({}, "", router.ActiveLink); //replaces the url in the browser
+
+
+          //location.href = String(location.href).replace(/#/, "")
+          
         });
 
-        // make it look like each nav item is an active link
-        $("a").on("mouseover", function()
-        {
-          $(this).css('cursor', 'pointer');
-        });
-        
-      });
-    }
+          $("a").on("mouseover",function()
+          {
+            $(this).css('cursor','pointer');
+          });
+    });
+  }
   /**
      * Inject page content in the main element 
      *
@@ -190,9 +188,6 @@
 
     function displayContactList() 
     {
-
-      authGuard();
-
       if (localStorage.length > 0) 
       {
 
@@ -399,27 +394,19 @@
           );
       }
     }
-    function authGuard()
-    {
-      if(!sessionStorage.getItem("user"))
-      {
-      // redirect back to login page
-      location.href = "/login";
-      }
-    }
     function ActiveLinkCallBack(activeLink)
     {
       switch (router.ActiveLink) 
         {
           case "home": return displayHome;
           case "about": return displayAbout;
-          case "projects": return displayProjects;
-          case "services": return displayServices;
-          case "contact": return displayContact;
-          case "contact-list": return displayContactList;
-          case "edit": return displayEdit
-          case "login": return displayLogin;
-          case "register": return displayRegister;
+          case "projects": return displayProjects();
+          case "services": return displayServices();
+          case "contact": return displayContact();
+          case "contact-List": return displayContactList();
+          case "edit": return displayEdit();
+          case "login": return displayLogin();
+          case "register": return displayRegister();
           default:
             console.error("ERROR: callback does not exist: " + activeLink);
             break;

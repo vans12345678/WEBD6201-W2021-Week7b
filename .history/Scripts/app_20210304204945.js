@@ -190,9 +190,6 @@
 
     function displayContactList() 
     {
-
-      authGuard();
-
       if (localStorage.length > 0) 
       {
 
@@ -399,27 +396,19 @@
           );
       }
     }
-    function authGuard()
-    {
-      if(!sessionStorage.getItem("user"))
-      {
-      // redirect back to login page
-      location.href = "/login";
-      }
-    }
     function ActiveLinkCallBack(activeLink)
     {
       switch (router.ActiveLink) 
         {
           case "home": return displayHome;
           case "about": return displayAbout;
-          case "projects": return displayProjects;
-          case "services": return displayServices;
-          case "contact": return displayContact;
-          case "contact-list": return displayContactList;
-          case "edit": return displayEdit
-          case "login": return displayLogin;
-          case "register": return displayRegister;
+          case "projects": return displayProjects();
+          case "services": return displayServices();
+          case "contact": return displayContact();
+          case "contact-List": return displayContactList();
+          case "edit": return displayEdit();
+          case "login": return displayLogin();
+          case "register": return displayRegister();
           default:
             console.error("ERROR: callback does not exist: " + activeLink);
             break;
